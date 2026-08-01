@@ -36,3 +36,7 @@ Next.js 16 is installed (`next@16.2.12`). It has breaking changes vs typical tra
 ## Spec Driven Development - Skills
 - /spec Usaremos esta habilidad para crear las especificaciones.
 - /spec-impl Usaremos esta skill para hacer las implementaciones.
+
+## Reglas de código
+
+- Usar código limpio, nombres, funciones, variables, etc. en inglés.
