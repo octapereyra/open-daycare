@@ -1,8 +1,12 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
+
+type ActiveKey = "feed" | "niños" | "avisos" | "cuenta";
 
 type NavItem = {
   label: string;
-  active?: boolean;
+  activeKey: ActiveKey;
+  href: string;
   icon: ReactNode;
 };
 
@@ -85,13 +89,13 @@ const logoutIcon = (
 );
 
 const navItems: NavItem[] = [
-  { label: "Feed", active: true, icon: feedIcon },
-  { label: "Niños", icon: ninosIcon },
-  { label: "Avisos", icon: avisosIcon },
-  { label: "Mi cuenta", icon: cuentaIcon },
+  { label: "Feed", activeKey: "feed", href: "/", icon: feedIcon },
+  { label: "Niños", activeKey: "niños", href: "/kids", icon: ninosIcon },
+  { label: "Avisos", activeKey: "avisos", href: "#", icon: avisosIcon },
+  { label: "Mi cuenta", activeKey: "cuenta", href: "#", icon: cuentaIcon },
 ];
 
-export function Sidebar() {
+export function Sidebar({ active }: { active: ActiveKey }) {
   return (
     <aside className="w-[248px] flex-none bg-surface border-r border-border flex flex-col py-6 px-4 sticky top-0 h-screen">
       <a
@@ -145,21 +149,26 @@ export function Sidebar() {
       </a>
 
       <nav className="flex flex-col gap-1 flex-1">
-        {navItems.map((item) => (
-          <a
-            key={item.label}
-            href="#"
-            className={[
-              "flex items-center gap-3 py-[11px] px-3 rounded-xl text-[14.5px]",
-              item.active
-                ? "bg-[#FBE3D8] text-[#D9583C] font-extrabold"
-                : "bg-transparent text-[#6E6359] font-semibold",
-            ].join(" ")}
-          >
-            {item.icon}
-            {item.label}
-          </a>
-        ))}
+        {navItems.map((item) => {
+          const isActive = item.activeKey === active;
+          const className = [
+            "flex items-center gap-3 py-[11px] px-3 rounded-xl text-[14.5px]",
+            isActive
+              ? "bg-[#FBE3D8] text-[#D9583C] font-extrabold"
+              : "bg-transparent text-[#6E6359] font-semibold",
+          ].join(" ");
+          return item.href === "#" ? (
+            <a key={item.label} href="#" className={className}>
+              {item.icon}
+              {item.label}
+            </a>
+          ) : (
+            <Link key={item.label} href={item.href} className={className}>
+              {item.icon}
+              {item.label}
+            </Link>
+          );
+        })}
       </nav>
 
       <div className="border-t border-border pt-[14px] mt-[10px]">

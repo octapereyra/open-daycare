@@ -1,8 +1,12 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
+
+type ActiveKey = "feed" | "niños" | "avisos" | "cuenta";
 
 type NavItem = {
   label: string;
-  active?: boolean;
+  activeKey: ActiveKey;
+  href: string;
   icon: ReactNode;
 };
 
@@ -85,31 +89,34 @@ const logoutIcon = (
 );
 
 const navItems: NavItem[] = [
-  { label: "Feed", active: true, icon: feedIcon },
-  { label: "Niños", icon: ninosIcon },
-  { label: "Avisos", icon: avisosIcon },
-  { label: "Mi cuenta", icon: cuentaIcon },
+  { label: "Feed", activeKey: "feed", href: "/", icon: feedIcon },
+  { label: "Niños", activeKey: "niños", href: "/kids", icon: ninosIcon },
+  { label: "Avisos", activeKey: "avisos", href: "#", icon: avisosIcon },
+  { label: "Mi cuenta", activeKey: "cuenta", href: "#", icon: cuentaIcon },
 ];
 
-export function BottomNav() {
+export function BottomNav({ active }: { active: ActiveKey }) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-surface border-t border-border px-2 pb-[env(safe-area-inset-bottom)]">
       <div className="flex items-center justify-between h-16">
-        {navItems.map((item) => (
-          <a
-            key={item.label}
-            href="#"
-            className={[
-              "flex flex-col items-center justify-center gap-1 flex-1 min-w-0 py-1",
-              item.active
-                ? "text-[#D9583C]"
-                : "text-[#6E6359]",
-            ].join(" ")}
-          >
-            {item.icon}
-            <span className="text-[11px] font-semibold">{item.label}</span>
-          </a>
-        ))}
+        {navItems.map((item) => {
+          const isActive = item.activeKey === active;
+          const className = [
+            "flex flex-col items-center justify-center gap-1 flex-1 min-w-0 py-1",
+            isActive ? "text-[#D9583C]" : "text-[#6E6359]",
+          ].join(" ");
+          return item.href === "#" ? (
+            <a key={item.label} href="#" className={className}>
+              {item.icon}
+              <span className="text-[11px] font-semibold">{item.label}</span>
+            </a>
+          ) : (
+            <Link key={item.label} href={item.href} className={className}>
+              {item.icon}
+              <span className="text-[11px] font-semibold">{item.label}</span>
+            </Link>
+          );
+        })}
 
         <a
           href="#"

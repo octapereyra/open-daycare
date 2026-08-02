@@ -24,10 +24,10 @@ export default function Home() {
   return (
     <div className="flex min-h-screen bg-canvas">
       <div className="hidden lg:block">
-        <Sidebar />
+        <Sidebar active="feed" />
       </div>
 
-      <BottomNav />
+      <BottomNav active="feed" />
       <Fab />
 
       <main className="flex-1 min-w-0 h-screen overflow-y-auto">
