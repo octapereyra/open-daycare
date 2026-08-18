@@ -19,10 +19,21 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Path alias `@/*` maps to the repo root (`./*`), not `src/`.
 - Tailwind CSS v4: configured inline via `@import "tailwindcss"` + `@theme` in `app/globals.css` and the `@tailwindcss/postcss` plugin. There is **no** `tailwind.config.ts`; do not create one.
 
+## Supabase integration
+
+- Database and authentication access use the official `@supabase/supabase-js` and `@supabase/ssr` packages.
+- Use the helpers in `utils/supabase/server.ts` and `utils/supabase/client.ts` instead of creating Supabase clients directly in application components.
+- Server-side access must use the cookie-aware SSR client. The browser client must use only the publishable `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+- `proxy.ts` refreshes Supabase sessions with `supabase.auth.getClaims()` and synchronizes auth cookies before requests reach the App Router.
+- Never expose `SUPABASE_SERVICE_ROLE_KEY` or any secret key to browser code, client components, or `NEXT_PUBLIC_*` variables.
+- Consult the current Supabase documentation before changing this integration:
+  - [Supabase SSR for Next.js](https://supabase.com/docs/guides/auth/server-side/nextjs)
+  - [Supabase JavaScript client](https://supabase.com/docs/reference/javascript/introduction)
+
 ## Project context
 
 - `open-daycare`: a Spanish-language daycare management app (staff + family/parent flows). UI copy is in Spanish.
-- `app/page.tsx` is still the default create-next-app scaffold — the real UI has not been built yet.
+- `app/page.tsx` contains the current home/feed UI for the daycare.
 - `references/pantallas/*.dc.html` are the design source of truth for each screen; open `references/pantallas/index.dc.html` for the catalog of 15 screens. `references/screenshots/*.png` are rendered previews. Implement against these: fonts are Fredoka (headings) + Nunito (body) on a warm palette (background `#f6ecdf`, accent `#d9583c`/`#f2937a`, staff blue `#2e89a6`, family purple `#7b5fc0`).
 
 ## MCPs
