@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { getActiveNav, sidebarUser } from '@/app/_data/mock';
+import { getActiveNav } from '@/app/_data/mock';
+import { signOutAction } from '@/app/actions/auth';
 import {
   BellIcon,
   HomeIcon,
@@ -10,6 +11,7 @@ import {
   UserIcon,
 } from '@/components/shared/icons';
 import type { NavIcon } from '@/app/_data/mock';
+import { useUser } from '@/components/shared/UserContext';
 
 const navIcon: Record<NavIcon, typeof HomeIcon> = {
   home: HomeIcon,
@@ -25,7 +27,18 @@ export function SidebarContent({
   pathname?: string;
   onOpenNewPost?: () => void;
 }) {
+  const user = useUser();
   const items = pathname ? getActiveNav(pathname) : [];
+
+  const roleLabel =
+    user.role === 'staff'
+      ? 'Maestra'
+      : user.role === 'parent'
+        ? 'Familia'
+        : user.role;
+  const userSubtitle = user.daycareName
+    ? `${roleLabel} · ${user.daycareName}`
+    : roleLabel;
 
   return (
     <>
@@ -79,24 +92,26 @@ export function SidebarContent({
       <div className="border-t border-line pt-[14px] mt-[10px]">
         <div className="flex items-center gap-[11px] py-[6px] px-2">
           <span className="w-[38px] h-[38px] rounded-full bg-accent-soft text-white font-head font-semibold text-[16px] flex items-center justify-center shrink-0">
-            {sidebarUser.initial}
+            {user.initial}
           </span>
           <span className="flex-1 min-w-0">
             <span className="block font-extrabold text-[14px] text-ink">
-              {sidebarUser.name}
+              {user.fullName}
             </span>
             <span className="block text-[12px] text-muted">
-              {sidebarUser.role}
+              {userSubtitle}
             </span>
           </span>
-          <Link
-            href="#"
-            title="Cerrar sesión"
-            aria-label="Cerrar sesión"
-            className="shrink-0 w-8 h-8 rounded-[10px] bg-canvas text-[#94887B] flex items-center justify-center"
-          >
-            <LogoutIcon className="w-4 h-4" />
-          </Link>
+          <form action={signOutAction}>
+            <button
+              type="submit"
+              title="Cerrar sesión"
+              aria-label="Cerrar sesión"
+              className="shrink-0 w-8 h-8 rounded-[10px] bg-canvas text-[#94887B] flex items-center justify-center cursor-pointer"
+            >
+              <LogoutIcon className="w-4 h-4" />
+            </button>
+          </form>
         </div>
       </div>
     </>
